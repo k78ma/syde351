@@ -18,16 +18,19 @@ function y = tilesignal(distance)
             y(i) = 0 - grout_depth * (1 - cos(2 * pi * grout_pos / grout_length)) / 2;
         end
     end
+    
+    % Plot the Profile
+    figure;
+    
+    title('Vertical Input Profile for Robot Wheels');
+    xlabel('Position (cm)');
+    ylabel('Vertical Displacement (cm)');
+    grid on;
+
 end
 
 
-% % Plot the Profile
-% figure;
-% 
-% title('Vertical Input Profile for Robot Wheels');
-% xlabel('Position (cm)');
-% ylabel('Vertical Displacement (cm)');
-% grid on;
+
 % 
 % % Save Profile to Workspace
 % assignin('base', 'x', x);

@@ -1,4 +1,7 @@
- %% Global Parameters
+close all;
+clear;
+
+%% Global Parameters
 base_mass = 20; %kg
 load_mass = 20; %kg
 total_mass = base_mass + load_mass; %kg
@@ -99,10 +102,22 @@ door = doorsignal(10);
 door = [door, zeros(1, length(tiles) - length(door))];
 floor_signal = door + tiles;
 
-robot_displacement = sim("suspensionsignal.slx").signal;
+% Create time and signal data
+% time = (0:0.01:3300)'; % Time vector for 330000 elements
+% floor_signal = floor_signal(:); % convert to column vector
+% test_data = [time, floor_signal]; % create 2x330000 vector
+robot_displacement = sim("suspensionsignal2.slx").signal;
 
 figure;
-plot(floor_signal)
+plot(floor_signal);
+title('Floor Signal');
+
+figure;
+plot(robot_displacement);
+title('Robot Displacement');
+xlabel('Sample size (n)');
+ylabel('Height Displacement');
+axis([0 3300 -1 1]);
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
     max_acceleration = 3;
