@@ -1,4 +1,4 @@
-function y = floorSignal(distance)
+function y = tilesignal(distance)
     % Parameters
     tile_length = 30.48; % cm
     grout_length = 1; % cm

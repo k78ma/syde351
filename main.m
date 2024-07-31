@@ -91,9 +91,15 @@ right_motor_voltage = timeseries(v_right, timescale);
 
 %path = sim("WheelDriveModel.slx", 1000);
 
-floor = floorSignal();
+tiles = tilesignal(33);
+door = doorsignal(10);
+door = [door, zeros(1, length(tiles) - length(door))];
+floor_signal = door + tiles;
+
+robot_displacement = sim("suspensionsignal.slx").signal;
+
 figure;
-plot(floor)
+plot(floor_signal)
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
     max_acceleration = 3;

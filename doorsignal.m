@@ -1,8 +1,8 @@
-function y = doorSignal(distance)
+function y = doorsignal(distanceToDoor)
     % Parameters
     threshold_length = 5; % cm
     threshold_height = 3; % cm
-    total_length = distance * 100; % cm
+    total_length = distanceToDoor * 100; % cm
     profile_resolution = 0.01;
     
     % Time and Position Vectors

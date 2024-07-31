@@ -1,6 +1,7 @@
  %% Global Parameters
-mass = 20; %kg
-mass_loaded = 20; %kg
+base_mass = 20; %kg
+load_mass = 20; %kg
+total_mass = base_mass + load_mass; %kg
 
 %% Motor Parameters
 La = 0.15*10^-3;
@@ -46,33 +47,32 @@ Ddelay = 0;
 
 %% Path Planning
 t = 0;
-% Drive left for 15m, driving backwards
+% 15m Forward
 [v_l, v_r, t_new] = path_linear(15);
 v_left = v_l;
 v_right = v_r;
 t = t + t_new;
 
-% % Rotate 90 deg CCW
+% 90 deg CW
 [v_l, v_r, t_new] = path_rot(90, true);
 % Accelerate
 v_left = [v_left, v_l];
 v_right = [v_right, v_r];
 t = t + t_new;
 
-% %  % Move 10m Foreward
+% 10m Foreward
 [v_l, v_r, t_new] = path_linear(10);
 v_left = [v_left, v_l];
 v_right = [v_right, v_r];
 t = t + t_new;
 
-% % % Rotate 90 deg CW
+% 90 deg CW
 [v_l, v_r, t_new] = path_rot(90, true);
-% Accelerate
 v_left = [v_left, v_l];
 v_right = [v_right, v_r];
 t = t + t_new;
 
-% % % Move 8m Foreward
+% 8m Foreward
 [v_l, v_r, t_new] = path_linear(8);
 v_left = [v_left, v_l];
 v_right = [v_right, v_r];
@@ -81,20 +81,22 @@ t = t + t_new;
 % Generate total time and timeseries:
 timescale = linspace(0, t, length(v_right));
 
-figure
-plot(v_left)
-figure
-plot(v_right)
-
-% Assuming starting pointing in poositive x direction
-% t = linspace(0,100,1000);
-% v_l = [linspace(0,20,400), linspace(0,0,40), linspace(3.52,3.52,50), linspace(0,0,30), linspace(20,20,480)];
-% v_r = [linspace(0,20,400), linspace(0,0,40), linspace(-3.52,-3.52,50), linspace(0,0,30), linspace(20,20,480)];
+% figure
+% plot(v_left)
+% figure
+% plot(v_right)
 
 left_motor_voltage = timeseries(v_left, timescale);
 right_motor_voltage = timeseries(v_right, timescale);
 
 %path = sim("WheelDriveModel.slx", 1000);
+
+tiles = tilesignal(33);
+door = doorsignal(10);
+floorSignal = door + tilesi;
+
+figure;
+plot(floorSignal)
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
     max_acceleration = 3;
