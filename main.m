@@ -1,6 +1,7 @@
  %% Global Parameters
-mass = 20; %kg
-mass_loaded = 20; %kg
+base_mass = 20; %kg
+load_mass = 20; %kg
+total_mass = base_mass + load_mass; %kg
 
 %% Motor Parameters
 La = 0.15*10^-3;
@@ -80,20 +81,19 @@ t = t + t_new;
 % Generate total time and timeseries:
 timescale = linspace(0, t, length(v_right));
 
-figure
-plot(v_left)
-figure
-plot(v_right)
-
-% Assuming starting pointing in poositive x direction
-% t = linspace(0,100,1000);
-% v_l = [linspace(0,20,400), linspace(0,0,40), linspace(3.52,3.52,50), linspace(0,0,30), linspace(20,20,480)];
-% v_r = [linspace(0,20,400), linspace(0,0,40), linspace(-3.52,-3.52,50), linspace(0,0,30), linspace(20,20,480)];
+% figure
+% plot(v_left)
+% figure
+% plot(v_right)
 
 left_motor_voltage = timeseries(v_left, timescale);
 right_motor_voltage = timeseries(v_right, timescale);
 
 %path = sim("WheelDriveModel.slx", 1000);
+
+floor = floorSignal();
+figure;
+plot(floor)
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
     max_acceleration = 3;
