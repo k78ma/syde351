@@ -2,6 +2,9 @@
 base_mass = 20; %kg
 load_mass = 20; %kg
 total_mass = base_mass + load_mass; %kg
+voltage_left = 0;
+voltage_right = 0;
+load_torque = 0;
 
 %% Motor Parameters
 La = 0.15*10^-3;
@@ -16,7 +19,7 @@ c = 10;
 k = 10;
 speed = 0.508; %m/s
 
-wheel_separation = 0.5; %m
+distance_between_wheels = 0.5; %m
 wheel_radius = 0.01; %m
 
 input_torque = 0; % No additional load other than mechanical resistance.
