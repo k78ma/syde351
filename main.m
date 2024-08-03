@@ -101,25 +101,35 @@ floor_signal = door + tiles;
 
 timescale = linspace(0, t, length(floor_signal));
 floor_signal_time = timeseries(floor_signal, timescale);
-% right_motor_voltage = timeseries(v_right, timescale);
 
+model_name = "suspensionsignal2";
 
-% Create time and signal data
-% time = (0:0.01:3300)'; % Time vector for 330000 elements
-% floor_signal = floor_signal(:); % convert to column vector
-% test_data = [time, floor_signal]; % create 2x330000 vector
-robot_displacement = sim("suspensionsignal2.slx").signal;
+open_system(model_name);
+set_param(model_name, 'StopTime', num2str(t));
 
-% figure;
-% plot(floor_signal);
-% title('Floor Signal');
+robot_displacement = sim(model_name).signal;
+% Extract time and data
+time = robot_displacement.Time; % [148x1 double]
+data = squeeze(robot_displacement.Data); % [1x1x148 double] -> [1x148] after squeeze
+
+% Create the plot
+figure; % Opens a new figure window
+plot(time, data); % Plot time vs. data
+xlabel('Time'); % Label for the x-axis
+ylabel('Data'); % Label for the y-axis
+title('Time vs Data'); % Title of the plot
+grid on; % Add grid for better readability
 
 figure;
-plot(robot_displacement);
-title('Robot Displacement');
-xlabel('Sample size (n)');
-ylabel('Height Displacement');
-axis([0 3300 -1 1]);
+title('Floor Signal');
+plot(timescale, floor_signal);
+
+% figure;
+% plot(robot_displacement);
+% title('Robot Displacement');
+% xlabel('Sample size (n)');
+% ylabel('Height Displacement');
+% axis([0 3300 -1 1]);
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
     max_acceleration = 3;

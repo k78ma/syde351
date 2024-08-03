@@ -21,23 +21,3 @@ function y = doorsignal(distanceToDoor)
     end
 end
 
-% % Plot the Profile
-% figure;
-% plot(x, y, 'LineWidth', 1.65);
-% title('Haversine Cross-Section Profile for Door Threshold at the End');
-% xlabel('Position (cm)');
-% ylabel('Height (cm)');
-% grid on;
-
-
-% % Plot the Profile
-% figure;
-% plot(x, y);
-% title('Haversine Cross-Section Profile for Door Threshold at the End');
-% xlabel('Position (cm)');
-% ylabel('Height (cm)');
-% grid on;
-% 
-% % Save Profile to Workspace
-% assignin('base', 'x', x);
-% assignin('base', 'y', y);

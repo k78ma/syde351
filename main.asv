@@ -1,7 +1,13 @@
- %% Global Parameters
+close all;
+clear;
+
+%% Global Parameters
 base_mass = 20; %kg
 load_mass = 20; %kg
 total_mass = base_mass + load_mass; %kg
+voltage_left = 0;
+voltage_right = 0;
+load_torque = 0;
 
 %% Motor Parameters
 La = 0.15*10^-3;
@@ -12,11 +18,11 @@ If = 1.15;
 Cshaft = 1;
 
 %% Suspension Parameters
-c = 10;
+c = 2;
 k = 10;
 speed = 0.508; %m/s
 
-wheel_separation = 0.5; %m
+distance_between_wheels = 0.5; %m
 wheel_radius = 0.01; %m
 
 input_torque = 0; % No additional load other than mechanical resistance.
@@ -79,24 +85,56 @@ v_right = [v_right, v_r];
 t = t + t_new;
 
 % Generate total time and timeseries:
-timescale = linspace(0, t, length(v_right));
+
 
 % figure
 % plot(v_left)
 % figure
 % plot(v_right)
 
-left_motor_voltage = timeseries(v_left, timescale);
-right_motor_voltage = timeseries(v_right, timescale);
-
 %path = sim("WheelDriveModel.slx", 1000);
 
 tiles = tilesignal(33);
 door = doorsignal(10);
-floorSignal = door + tilesi;
+door = [door, zeros(1, length(tiles) - length(door))];
+floor_signal = door + tiles;
 
-figure;
-plot(floorSignal)
+timescale = linspace(0, t, length(floor_signal));
+floor_signal_time = timeseries(floor_signal, timescale);
+
+model_name = "suspensionsignal2";
+
+open_system(model_name);
+set_param(model_name, 'StopTime', num2str(t));
+
+robot_displacement = sim(model_name).signal;
+
+dataStruct = struct(...
+    'Time', linspace(0, 10, 148), ... % Replace with your actual time data
+    'Data', randn(1, 148)); % Replace with your actual data
+
+% Extract time and data
+time = dataStruct.Time; % [148x1 double]
+data = squeeze(dataStruct.Data); % [1x1x148 double] -> [1x148] after squeeze
+
+% Create the plot
+figure; % Opens a new figure window
+plot(time, data); % Plot time vs. data
+xlabel('Time'); % Label for the x-axis
+ylabel('Data'); % Label for the y-axis
+title('Time vs Data'); % Title of the plot
+grid on; % Add grid for better readability
+
+% figure;
+% title('Floor Signal');
+% plot(floor_signal);
+
+% figure;
+% plot(robot_displacement);
+% title('Robot Displacement');
+% xlabel('Sample size (n)');
+% ylabel('Height Displacement');
+% axis([0 3300 -1 1]);
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
     max_acceleration = 3;
