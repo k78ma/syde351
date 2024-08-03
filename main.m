@@ -18,7 +18,7 @@ If = 1.15;
 Cshaft = 1;
 
 %% Suspension Parameters
-c = 10;
+c = 2;
 k = 10;
 speed = 0.508; %m/s
 
