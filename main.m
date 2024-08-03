@@ -85,15 +85,12 @@ v_right = [v_right, v_r];
 t = t + t_new;
 
 % Generate total time and timeseries:
-timescale = linspace(0, t, length(v_right));
+
 
 % figure
 % plot(v_left)
 % figure
 % plot(v_right)
-
-left_motor_voltage = timeseries(v_left, timescale);
-right_motor_voltage = timeseries(v_right, timescale);
 
 %path = sim("WheelDriveModel.slx", 1000);
 
@@ -102,15 +99,20 @@ door = doorsignal(10);
 door = [door, zeros(1, length(tiles) - length(door))];
 floor_signal = door + tiles;
 
+timescale = linspace(0, t, length(floor_signal));
+floor_signal_time = timeseries(floor_signal, timescale);
+% right_motor_voltage = timeseries(v_right, timescale);
+
+
 % Create time and signal data
 % time = (0:0.01:3300)'; % Time vector for 330000 elements
 % floor_signal = floor_signal(:); % convert to column vector
 % test_data = [time, floor_signal]; % create 2x330000 vector
 robot_displacement = sim("suspensionsignal2.slx").signal;
 
-figure;
-plot(floor_signal);
-title('Floor Signal');
+% figure;
+% plot(floor_signal);
+% title('Floor Signal');
 
 figure;
 plot(robot_displacement);
