@@ -5,7 +5,7 @@ clear;
 base_mass = 20; %kg
 load_mass = 20; %kg
 total_mass = base_mass + load_mass; %kg
-load_torque = 0;
+load_torque = 1;
 
 %% Motor Parameters
 La = 0.15*10^-3;
@@ -37,11 +37,11 @@ v_right = v_r;
 t = t + t_new;
 
 % 90 deg CW
-[v_l, v_r, t_new] = path_rot(90, true);
-% Accelerate
-v_left = [v_left, v_l];
-v_right = [v_right, v_r];
-t = t + t_new;
+% [v_l, v_r, t_new] = path_rot(90, true);
+% % Accelerate
+% v_left = [v_left, v_l];
+% v_right = [v_right, v_r];
+% t = t + t_new;
 
 % 10m Foreward
 [v_l, v_r, t_new] = path_linear(1000, speed);
@@ -50,10 +50,10 @@ v_right = [v_right, v_r];
 t = t + t_new;
 
 % 90 deg CW
-[v_l, v_r, t_new] = path_rot(90, true);
-v_left = [v_left, v_l];
-v_right = [v_right, v_r];
-t = t + t_new;
+% [v_l, v_r, t_new] = path_rot(90, true);
+% v_left = [v_left, v_l];
+% v_right = [v_right, v_r];
+% t = t + t_new;
 
 % 8m Foreward
 [v_l, v_r, t_new] = path_linear(800, speed);
@@ -63,14 +63,14 @@ t = t + t_new;
 
 % Generate total time and timeseries:
 
+% 
+% figure;
+% plot(v_left);
+% figure;
+% plot(v_right);
 
-figure;
-plot(v_left);
-figure;
-plot(v_right);
-
-load_torque = linspace(0, 0, length(v_right));
-gear_ratio = linspace(3, 3, length(v_right));
+% load_torque = linspace(0, 0, length(v_right));
+% gear_ratio = linspace(3, 3, length(v_right));
 timescale = linspace(0, t, length(v_right));
 voltage_right = timeseries(v_right, timescale);
 voltage_left = timeseries(v_left, timescale);
@@ -84,6 +84,65 @@ set_param(model_name, 'AbsTol', '1e-12'); % Adjust this value as needed
 set_param(model_name, 'MaxStep', '0.00005'); % Adjust this value as needed
 test = sim(model_name);
 
+% Create a new figure
+% Create a new figure
+% Create a new figure
+figure;
+
+% Plot acceleration
+subplot(4, 2, 1); % 4x2 grid, first subplot
+plot(test.acceleration.Time, test.acceleration.Data);
+title('Acceleration');
+xlabel('Time');
+ylabel('Acceleration');
+
+% Plot jerk
+subplot(4, 2, 2); % 4x2 grid, second subplot
+plot(test.jerk.Time, test.jerk.Data);
+title('Jerk');
+xlabel('Time');
+ylabel('Jerk');
+
+% Plot x position
+subplot(4, 2, 3); % 4x2 grid, third subplot
+plot(test.pos_x.Time, test.pos_x.Data);
+title('X Position');
+xlabel('Time');
+ylabel('X Position');
+
+% Plot y position
+subplot(4, 2, 4); % 4x2 grid, fourth subplot
+plot(test.pos_y.Time, test.pos_y.Data);
+title('Y Position');
+xlabel('Time');
+ylabel('Y Position');
+
+% Plot voltage left
+subplot(4, 2, 5); % 4x2 grid, fifth subplot
+plot(timescale, v_left);
+title('Voltage Left');
+xlabel('Time');
+ylabel('Voltage Left');
+
+% Plot voltage right
+subplot(4, 2, 6); % 4x2 grid, sixth subplot
+plot(timescale, v_right);
+title('Voltage Right');
+xlabel('Time');
+ylabel('Voltage Right');
+
+% Plot velocity
+subplot(4, 2, 7); % 4x2 grid, seventh subplot
+plot(test.vel.Time, test.vel.Data);
+title('Velocity');
+xlabel('Time');
+ylabel('Velocity');
+
+% Adjust layout
+sgtitle('Timeseries and Voltage Plots'); % Optional: add a title for the entire figure
+
+
+
 tiles = tilesignal(33);
 door = doorsignal(10);
 door = [door, zeros(1, length(tiles) - length(door))];
@@ -92,29 +151,29 @@ floor_signal = door + tiles;
 timescale = linspace(0, t, length(floor_signal));
 floor_signal_time = timeseries(floor_signal, timescale);
 
-model_name = "suspensionsignal2";
-
-open_system(model_name);
-set_param(model_name, 'StopTime', num2str(t));
-set_param(model_name, 'Solver', 'ode45'); % You can choose 'ode45', 'ode23', 'ode15s', etc.
-set_param(model_name, 'RelTol', '1e-12'); % Adjust this value as needed
-set_param(model_name, 'AbsTol', '1e-12'); % Adjust this value as needed
-set_param(model_name, 'MaxStep', '0.00005'); % Adjust this value as needed
-robot_displacement = sim(model_name).signal;
-
-% Extract time and data
-time = robot_displacement.Time; % [148x1 double]
-data = squeeze(robot_displacement.Data); % [1x1x148 double] -> [1x148] after squeeze
-
-fprintf('c: %f, k: %f, displacement: %f, speed: %f\n', c, k, max(abs(data)), speed);
-
-% Create the plot
-figure; % Opens a new figure window
-plot(time, data); % Plot time vs. data
-xlabel('Time'); % Label for the x-axis
-ylabel('Data'); % Label for the y-axis
-title('Time vs Data'); % Title of the plot
-grid on; % Add grid for better readability
+% model_name = "suspensionsignal2";
+% 
+% open_system(model_name);
+% set_param(model_name, 'StopTime', num2str(t));
+% set_param(model_name, 'Solver', 'ode45'); % You can choose 'ode45', 'ode23', 'ode15s', etc.
+% set_param(model_name, 'RelTol', '1e-12'); % Adjust this value as needed
+% set_param(model_name, 'AbsTol', '1e-12'); % Adjust this value as needed
+% set_param(model_name, 'MaxStep', '0.00005'); % Adjust this value as needed
+% robot_displacement = sim(model_name).signal;
+% 
+% % Extract time and data
+% time = robot_displacement.Time; % [148x1 double]
+% data = squeeze(robot_displacement.Data); % [1x1x148 double] -> [1x148] after squeeze
+% 
+% fprintf('c: %f, k: %f, displacement: %f, speed: %f\n', c, k, max(abs(data)), speed);
+% 
+% % Create the plot
+% figure; % Opens a new figure window
+% plot(time, data); % Plot time vs. data
+% xlabel('Time'); % Label for the x-axis
+% ylabel('Data'); % Label for the y-axis
+% title('Time vs Data'); % Title of the plot
+% grid on; % Add grid for better readability
 % 
 % figure;
 % title('Floor Signal');
