@@ -18,9 +18,9 @@ If = 1.15;
 Cshaft = 1;
 
 %% Suspension Parameters
-c = 2;
-k = 10;
-speed = 0.508; %m/s
+c = 1;
+k = 1;
+speed = 300; %cm/s
 
 distance_between_wheels = 0.5; %m
 wheel_radius = 0.01; %m
@@ -28,33 +28,11 @@ wheel_radius = 0.01; %m
 input_torque = 0; % No additional load other than mechanical resistance.
 gear_ratio = 3;
 
-%% Floor parameters
-%note - these values are actually the distance travelled
-Dtile = 0.3048;
-Dgroove = 0.01;
-Hgroove = 0.005;
-
-%% Door parameters
-%note - these values are actually the distance travelled
-Ddoor = 0.05;
-Hdoor = 0.03;
-Ddelay = 0;
-
-%% Robot Motion Parameters (Tune the robot motion here)
-% %Tune the parameters found in the path generation functions at the end of
-%this file
-%floorsig = sim("floorsignal.slx", 5/speed);
-%doorsig = sim("DoorSignal.slx", 5/speed + 0.2);
-
-%sim("Suspension_System.slx", 5/speed + 0.3);
-
-
-
 
 %% Path Planning
 t = 0;
 % 15m Forward
-[v_l, v_r, t_new] = path_linear(15);
+[v_l, v_r, t_new] = path_linear(15, speed);
 v_left = v_l;
 v_right = v_r;
 t = t + t_new;
@@ -67,7 +45,7 @@ v_right = [v_right, v_r];
 t = t + t_new;
 
 % 10m Foreward
-[v_l, v_r, t_new] = path_linear(10);
+[v_l, v_r, t_new] = path_linear(10, speed);
 v_left = [v_left, v_l];
 v_right = [v_right, v_r];
 t = t + t_new;
@@ -79,7 +57,7 @@ v_right = [v_right, v_r];
 t = t + t_new;
 
 % 8m Foreward
-[v_l, v_r, t_new] = path_linear(8);
+[v_l, v_r, t_new] = path_linear(8, speed);
 v_left = [v_left, v_l];
 v_right = [v_right, v_r];
 t = t + t_new;
@@ -108,9 +86,14 @@ open_system(model_name);
 set_param(model_name, 'StopTime', num2str(t));
 
 robot_displacement = sim(model_name).signal;
+
+
+
 % Extract time and data
 time = robot_displacement.Time; % [148x1 double]
 data = squeeze(robot_displacement.Data); % [1x1x148 double] -> [1x148] after squeeze
+
+fprintf('c: %f, k: %f, displacement: %f, speed: %f\n', c, k, max(abs(data)), speed);
 
 % Create the plot
 figure; % Opens a new figure window
@@ -119,10 +102,10 @@ xlabel('Time'); % Label for the x-axis
 ylabel('Data'); % Label for the y-axis
 title('Time vs Data'); % Title of the plot
 grid on; % Add grid for better readability
-
-figure;
-title('Floor Signal');
-plot(timescale, floor_signal);
+% 
+% figure;
+% title('Floor Signal');
+% plot(timescale, floor_signal);
 
 % figure;
 % plot(robot_displacement);
@@ -131,10 +114,9 @@ plot(timescale, floor_signal);
 % ylabel('Height Displacement');
 % axis([0 3300 -1 1]);
 
-function [v_path_left, v_path_right, path_time] = path_linear(distance)
-    max_acceleration = 3;
+function [v_path_left, v_path_right, path_time] = path_linear(distance, drive_speed)
+    max_acceleration = 150;
     drive_voltage = 24;
-    drive_speed = 3;
 
     resolution = 100;
     
@@ -158,7 +140,7 @@ function [v_path_left, v_path_right, path_time] = path_linear(distance)
 end
 
 function [v_path_left, v_path_right, turn_time] = path_rot(angle, CW)
-    max_turning_acceleration = 15; % deg/s
+    max_turning_acceleration = 12.5; % deg/s
     turning_velocity = 25; % deg/s
     turning_voltage = 5;
 

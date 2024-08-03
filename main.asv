@@ -18,37 +18,14 @@ If = 1.15;
 Cshaft = 1;
 
 %% Suspension Parameters
-c = 2;
-k = 10;
-speed = 0.508; %m/s
+c = 20;
+k = 100;
 
 distance_between_wheels = 0.5; %m
 wheel_radius = 0.01; %m
 
 input_torque = 0; % No additional load other than mechanical resistance.
 gear_ratio = 3;
-
-%% Floor parameters
-%note - these values are actually the distance travelled
-Dtile = 0.3048;
-Dgroove = 0.01;
-Hgroove = 0.005;
-
-%% Door parameters
-%note - these values are actually the distance travelled
-Ddoor = 0.05;
-Hdoor = 0.03;
-Ddelay = 0;
-
-%% Robot Motion Parameters (Tune the robot motion here)
-% %Tune the parameters found in the path generation functions at the end of
-%this file
-%floorsig = sim("floorsignal.slx", 5/speed);
-%doorsig = sim("DoorSignal.slx", 5/speed + 0.2);
-
-%sim("Suspension_System.slx", 5/speed + 0.3);
-
-
 
 
 %% Path Planning
@@ -109,13 +86,11 @@ set_param(model_name, 'StopTime', num2str(t));
 
 robot_displacement = sim(model_name).signal;
 
-dataStruct = struct(...
-    'Time', linspace(0, 10, 148), ... % Replace with your actual time data
-    'Data', randn(1, 148)); % Replace with your actual data
+disp('c: %f, k: %')
 
 % Extract time and data
-time = dataStruct.Time; % [148x1 double]
-data = squeeze(dataStruct.Data); % [1x1x148 double] -> [1x148] after squeeze
+time = robot_displacement.Time; % [148x1 double]
+data = squeeze(robot_displacement.Data); % [1x1x148 double] -> [1x148] after squeeze
 
 % Create the plot
 figure; % Opens a new figure window
@@ -124,10 +99,10 @@ xlabel('Time'); % Label for the x-axis
 ylabel('Data'); % Label for the y-axis
 title('Time vs Data'); % Title of the plot
 grid on; % Add grid for better readability
-
+% 
 % figure;
 % title('Floor Signal');
-% plot(floor_signal);
+% plot(timescale, floor_signal);
 
 % figure;
 % plot(robot_displacement);
@@ -137,9 +112,9 @@ grid on; % Add grid for better readability
 % axis([0 3300 -1 1]);
 
 function [v_path_left, v_path_right, path_time] = path_linear(distance)
-    max_acceleration = 3;
+    max_acceleration = 150;
     drive_voltage = 24;
-    drive_speed = 3;
+    drive_speed = 100;
 
     resolution = 100;
     
@@ -163,7 +138,7 @@ function [v_path_left, v_path_right, path_time] = path_linear(distance)
 end
 
 function [v_path_left, v_path_right, turn_time] = path_rot(angle, CW)
-    max_turning_acceleration = 15; % deg/s
+    max_turning_acceleration = 12.5; % deg/s
     turning_velocity = 25; % deg/s
     turning_voltage = 5;
 
