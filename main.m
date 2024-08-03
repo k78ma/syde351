@@ -18,8 +18,8 @@ If = 1.15;
 Cshaft = 1;
 
 %% Suspension Parameters
-c = 1;
-k = 1;
+c = 20;
+k = 40;
 speed = 300; %cm/s
 
 distance_between_wheels = 0.5; %m
@@ -84,6 +84,16 @@ model_name = "suspensionsignal2";
 
 open_system(model_name);
 set_param(model_name, 'StopTime', num2str(t));
+set_param(model_name, 'Solver', 'ode45'); % You can choose 'ode45', 'ode23', 'ode15s', etc.
+
+% Set the relative tolerance
+set_param(model_name, 'RelTol', '1e-12'); % Adjust this value as needed
+
+% Set the absolute tolerance
+set_param(model_name, 'AbsTol', '1e-12'); % Adjust this value as needed
+
+% Set the maximum step size
+set_param(model_name, 'MaxStep', '0.00005'); % Adjust this value as needed
 
 robot_displacement = sim(model_name).signal;
 
